@@ -81,6 +81,7 @@ module "lambda" {
 
 - **Partial batch responses:** with SQS, a failing message normally makes the whole batch visible again. Setting `function_response_types = ["ReportBatchItemFailures"]` and returning the failed message IDs retries only those — worth enabling on any SQS consumer.
 - **Timeout vs visibility timeout:** the queue's visibility timeout must exceed the function timeout, otherwise messages are redelivered while still being processed.
+- **Code signing:** setting `code_signing_config_arn` makes Lambda reject any package not signed by a trusted AWS Signer profile. It requires a signing pipeline, so it is off by default.
 - **VPC functions** need `security_group_ids` alongside `subnet_ids`, and reach AWS services through NAT or VPC endpoints — see [terraform-aws-vpc-endpoint](https://github.com/orlando-mt/terraform-aws-vpc-endpoint).
 
 ## Examples
@@ -126,6 +127,7 @@ module "lambda" {
 | image_command / image_entry_point / image_working_directory | Container overrides | `list/string` | `[]` / `null` | no |
 | handler / runtime | Zip packaging settings | `string` | `null` | no |
 | layers | Layer ARNs | `list(string)` | `[]` | no |
+| code_signing_config_arn | Signer verification config | `string` | `null` | no |
 | architectures | `["arm64"]` or `["x86_64"]` | `list(string)` | `["arm64"]` | no |
 | memory_size | Memory in MB (128-10240) | `number` | `256` | no |
 | timeout | Timeout in seconds (1-900) | `number` | `30` | no |

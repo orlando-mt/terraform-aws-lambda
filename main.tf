@@ -38,6 +38,7 @@ resource "aws_cloudwatch_log_group" "this" {
 # ---------------------------------------------------------------------------
 
 resource "aws_lambda_function" "this" {
+  # checkov:skip=CKV_AWS_272:Code signing is supported via code_signing_config_arn. It is off by default because it requires a Signer profile and a signed artifact, which not every pipeline produces; enable it where supply chain verification is required.
   lifecycle {
     precondition {
       condition     = var.package_type != "Image" || var.image_uri != null
@@ -67,6 +68,9 @@ resource "aws_lambda_function" "this" {
   role          = local.role_arn
 
   package_type = var.package_type
+
+  # Verifies the artifact was signed by a trusted Signer profile
+  code_signing_config_arn = local.is_image ? null : var.code_signing_config_arn
 
   # Zip packaging
   filename          = local.is_image ? null : local.filename

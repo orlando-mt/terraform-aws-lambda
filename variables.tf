@@ -88,6 +88,12 @@ variable "image_working_directory" {
   default     = null
 }
 
+variable "code_signing_config_arn" {
+  description = "ARN of a Lambda code signing configuration. When set, Lambda verifies the package was signed by a trusted AWS Signer profile before deploying it (Zip packaging only)"
+  type        = string
+  default     = null
+}
+
 variable "handler" {
   description = "Function handler (Zip packaging only)"
   type        = string
